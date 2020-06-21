@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8"/>
+		<script type="text/javascript" src="interface.js"></script>
+		<script type="text/javascript" src="Trajectoire.js"></script>
+		 <link rel="stylesheet" href="interface.css" />
+		<title>WEB</title>
+	</head>
+	<body>
+
+	<h1>Jeu des trajectoires</h1>
+	
+	<canvas width="1000" height="500" id="canvas" style="border:3px solid rgb(177, 147, 83);"></canvas>
+		
+	<p>
+		<button type="button" id="Level1" onclick="Play(1);"><img src="Level/1.jpg" alt="1"/></button>
+		<button type="button" id="Level2" onclick="Play(2);"><img src="Level/2.jpg" alt="2"/></button>
+		<button type="button" id="Level3" onclick="Play(3);"><img src="Level/3.jpg" alt="3"/></button>
+		<button type="button" id="Level4" onclick="Play(4);"><img src="Level/4.jpg" alt="4"/></button>
+		<button type="button" id="Level5" onclick="Play(5);"><img src="Level/5.jpg" alt="5"/></button>
+		<button type="button" id="Level6" onclick="Play(6);"><img src="Level/6.jpg" alt="6"/></button>
+		
+		<button type="button" id="restart" onclick="Play(-1)"><img src="Level/restart.jpg" alt="4"/></button>
+		<button type="button" id="continue" onclick="Play(-2)"><img src="Level/continue.jpg" alt="5"/></button>		
+
+		<button type="button" onclick="levelSelect(); endGame();"> Level</button>
+		<button type="button" onclick="Parametre();" > Parametre </button>
+	</p>
+	
+	<p id="parametre">
+		Parametre:</br>
+		
+		<label for="choixproj">type de projectile:</label>
+		<select name="projectile" id="projectile">
+			
+			<option ></option>
+			<option value="fer">fer</option>
+			<option value="liege">liege</option>
+			<option value="caoutchouc">caoutchouc</option>
+			
+		</select> </br>
+	</p>
+	</body>
+</html>	
