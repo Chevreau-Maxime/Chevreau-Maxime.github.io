@@ -1,6 +1,7 @@
 var name;
 
-var links = [["\"/Tetris/TetrisV2.html\"",                      "Tetris version 2"],
+var links = [["\"https://maximenodejs.herokuapp.com/\"",        "NodeJS App (Hosted on Heroku)"],
+             ["\"/Tetris/TetrisV2.html\"",                      "Tetris version 2"],
              ["\"/Fractales/Fractal.html\"",                    "Fractals"],
              ["\"/WebProject-Trajectory(MC.SS)/trajweb.html\"", "Projet Web Peip2"],
              ["\"/Pathfinder/Pathfinder.html\"",                "Gridless Pathfinder"],
