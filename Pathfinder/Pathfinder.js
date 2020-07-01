@@ -43,8 +43,9 @@ window.onload = function () {
         Blocks[i] = new Object();
     } 
     //Blocks[0] = {x:300, y:200, w:100, h:50};
-    Blocks[1] = {x:450, y:70, w:50, h:400};
+    Blocks[1] = {x:300, y:70, w:50, h:200};
     Blocks[0] = {x:100, y:100, w:100, h:30};
+    Blocks[2] = {x:100, y:300, w:100, h:100}
 
     var Objective = new Object();
     Objective = {x:can.width-20, y:can.height-20};
