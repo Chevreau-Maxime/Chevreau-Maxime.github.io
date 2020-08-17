@@ -15,13 +15,13 @@ var scene = new THREE.Scene();
 //CAMERA
 var cam_t = 0;
 var cam_angle = 0;
-var cam_radius = 100;
+var cam_radius = 120;
 var camera = new THREE.PerspectiveCamera(90, WIDTH/HEIGHT);
 scene.add(camera);
 
 //GEOMETRY
-var boxGeometry = new THREE.BoxGeometry(5, 5, 5);
-var basicMaterial = new THREE.MeshLambertMaterial({color: 0x0095DD});
+var boxGeometry = new THREE.BoxGeometry(5, 15, 5);
+var basicMaterial = new THREE.MeshLambertMaterial({color: "rgb(100,100,230)"});
 /*
 var cube = new THREE.Mesh(boxGeometry, basicMaterial);
 scene.add(cube);
@@ -66,6 +66,7 @@ function update(){
     t+= 0.01;
     updateWaves(waves);
     updateTerrain(terrain, waves, t);
+    //updateColor(terrain);
     if (t > 5) {
         addWave(waves, Math.floor(terrain.w * Math.random()),  Math.floor(terrain.h * Math.random()), 8, 80);
         t = 0;
@@ -75,4 +76,13 @@ function update(){
     camera.position.x = Math.sin(cam_angle)*cam_radius;
     camera.position.z = Math.cos(cam_angle)*cam_radius;
     camera.rotation.y = cam_angle;
+}
+
+
+window.onresize = scale_back;
+function scale_back(){
+    WIDTH = window.innerWidth;
+    HEIGHT = window.innerHeight;
+    renderer.setSize(WIDTH, HEIGHT);
+    camera = new THREE.PerspectiveCamera(90, WIDTH/HEIGHT);
 }

@@ -39,6 +39,13 @@ function updateTerrain(terrain, waves, t){
     }
 }
 
+function updateColor(terrain){
+    for (var i=0; i<terrain.w*terrain.h; i++){
+        var ratio = (terrain.cubes[i].position.z + 2) / 15;
+        terrain.cubes[i].material = new THREE.MeshLambertMaterial({color: lerpColor(ratio)});
+    }
+}
+
 function getx(i, w){
     return (i%w);
 }
@@ -62,4 +69,14 @@ function sinc(x){
     var res = Math.sin(x) / (x);
     res *= (Math.abs(x) < 2*Math.PI );
     return res
+}
+
+function lerpColor(ratio){
+    ratio = ratio > 1 ? 1 : ratio;
+    ratio = ratio < 0 ? 0 : ratio;
+    var r = Math.floor(250 + (ratio * (100 - 250)));
+    var g = Math.floor(100 + (ratio * (100 - 100)));
+    var b = Math.floor(100 + (ratio * (250 - 100)));
+    
+    return "rgb("+r+","+g+","+b+")";
 }
