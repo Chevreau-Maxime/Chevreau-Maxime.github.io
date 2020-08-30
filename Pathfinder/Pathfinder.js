@@ -38,23 +38,24 @@ window.onload = function () {
     Robot.memory = new Array();
     Robot.path = new Array();
     
-    var Blocks = new Array(2);
-    for (var i=0; i<Blocks.length; i++){
-        Blocks[i] = new Object();
-    } 
-    //Blocks[0] = {x:300, y:200, w:100, h:50};
-    Blocks[1] = {x:300, y:70, w:50, h:200};
-    Blocks[0] = {x:100, y:100, w:100, h:30};
-    Blocks[2] = {x:100, y:300, w:100, h:100}
+    var Blocks = [
+        {x:500, y:70, w:150, h:200},
+        {x:200, y:100, w:100, h:30},
+        {x:100, y:300, w:100, h:100}
+    ];
 
     var Objective = new Object();
     Objective = {x:can.width-20, y:can.height-20};
     var requirePathUpdate = true;
+    var radiusSafeZone = 20;
 
     //--------------------------------------------------------INITIALIZATION :
 
 
     calulatePath_Sensor(Robot, Objective);
+    changeObjective(Objective, Robot);
+    calulatePath_Sensor(Robot, Objective);
+
 
     //--------------------------------------------------------SIMULATION FUNCTIONS :
 
@@ -66,9 +67,8 @@ window.onload = function () {
         var distance;
         var possible = true;
         var collision = null;
+        var requirePathUpdate = 0;
 
-        //reset requirePathUpdate
-        //requirePathUpdate = false;
 
         for (var i=0; i<Rob.raycast.length; i++){
             var P = new Array(2);
@@ -97,7 +97,7 @@ window.onload = function () {
                     if (collision!=null){
                         distance = Math.sqrt(((collision[0]-Rob.memory[j][0])*(collision[0]-Rob.memory[j][0])) + 
                         ((collision[1]-Rob.memory[j][1])*(collision[1]-Rob.memory[j][1])));
-                        if (distance < 10){
+                        if (distance < radiusSafeZone){
                             possible = false;
                         }
                     }
@@ -105,32 +105,33 @@ window.onload = function () {
 
                 //update Robot memory
                 if (possible && collision!=null){
-                    //requirePathUpdate = true;
+                    requirePathUpdate = 1;
                     Rob.memory[Rob.memory.length] = new Array(2);
                     Rob.memory[Rob.memory.length-1][0] = collision[0];
                     Rob.memory[Rob.memory.length-1][1] = collision[1];
                 }
             }
         }
+        return requirePathUpdate;
     }
 
 
     function moveRobot(Rob){
         var moveVector = new Array(2);
-        moveVector[0] = Rob.path[1][0] - Rob.path[0][0];
-        moveVector[1] = Rob.path[1][1] - Rob.path[0][1];
+        moveVector[0] = Rob.path[1][0] - Rob.position[0];;
+        moveVector[1] = Rob.path[1][1] - Rob.position[1];
         var distance = Math.sqrt((moveVector[0]*moveVector[0])+(moveVector[1]*moveVector[1]));
+        var requirePathUpdate = 0;
 
         //before any movement, reach required angle
-        //var reqAngle = Math.atan(moveVector[1]/moveVector[0]);
         var reqAngle = Math.acos(moveVector[0]/distance);
         if (moveVector[1] < 0){
             reqAngle *= -1;
         }
 
-        //alert("current : " + Math.round(Rob.angle*10)/10 + " needed : " + Math.round(reqAngle*10)/10);
-        document.getElementById("text").innerHTML = "ANGLE      current : " + Math.round(Rob.angle*10)/10 + " needed : " + Math.round(reqAngle*10)/10;
+        //document.getElementById("text").innerHTML = "ANGLE      current : " + Math.round(Rob.angle*10)/10 + " needed : " + Math.round(reqAngle*10)/10;
 
+        //Angle not okay, rotate robot
         if (reqAngle != Rob.angle) {
             if (distance==0 && Rob.path.length==2){
                 //Haha nothing
@@ -148,6 +149,8 @@ window.onload = function () {
         //Angle is okay, move the robot
         else {
             if (distance < Rob.speed){
+                //robot has reached destination, must update path
+                requirePathUpdate = 1;
                 Rob.position[0] = Rob.path[1][0];
                 Rob.position[1] = Rob.path[1][1];
             } else {
@@ -155,20 +158,26 @@ window.onload = function () {
                 Rob.position[1] += Rob.speed * Math.sin(Rob.angle);    
             }
         }
+        return requirePathUpdate;
     }
 
 
     function changeObjective (Obj, Rob){
+        var requirePathUpdate = 0;
+        //clic within boundaries of canvas ?
         if (Input.click[0] > 10 && Input.click[0] < can.width + 10){
             if (Input.click[1] > 10 && Input.click[1] < can.height + 10){
+                //check if valid obj :
                 if (!checkCollision_Blocks(Input.click, Blocks)){
                     if (!checkCollision_Sensor(Input.click, Rob)){
+                        if ((Obj.x != Input.click[0]) || (Obj.y != Input.click[1])) requirePathUpdate = 1;
                         Obj.x = Input.click[0];
                         Obj.y = Input.click[1];
                     }
                 }
             }
         }
+        return requirePathUpdate;
     }
 
 
@@ -189,11 +198,10 @@ window.onload = function () {
 
     function checkCollision_Sensor(P, Rob){
         var distance;
-        var margin = 30;
         for (var j=0; j<Rob.memory.length; j++){
             distance = Math.sqrt(((P[0]-Rob.memory[j][0])*(P[0]-Rob.memory[j][0])) + 
             ((P[1]-Rob.memory[j][1])*(P[1]-Rob.memory[j][1])));
-            if (distance < margin){
+            if (distance < radiusSafeZone){
                 return true;
             }
         }
@@ -627,7 +635,7 @@ window.onload = function () {
             //Aura
             con.beginPath();
             con.fillStyle = "rgba(200, 0, 0, 0.2)";
-            con.arc(Rob.memory[i][0], Rob.memory[i][1], 30, 0, 2*Math.PI);
+            con.arc(Rob.memory[i][0], Rob.memory[i][1], radiusSafeZone, 0, 2*Math.PI);
             con.fill();
             con.closePath();
         }
@@ -639,10 +647,12 @@ window.onload = function () {
     function step() {
         clearMap();
 
-        updateMemory(Robot);
-        changeObjective(Objective, Robot);
+        var requirePathUpdate = 0;
+        requirePathUpdate = (requirePathUpdate || updateMemory(Robot));
+        requirePathUpdate = (requirePathUpdate || moveRobot(Robot));
+        requirePathUpdate = (requirePathUpdate || changeObjective(Objective, Robot));
         if (requirePathUpdate) calulatePath_Sensor(Robot, Objective);
-        moveRobot(Robot);
+        
 
 
         drawBlocks(Blocks);
