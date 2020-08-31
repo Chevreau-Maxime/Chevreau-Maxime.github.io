@@ -25,7 +25,7 @@ function createMesh(width){
     geometry.computeVertexNormals();
     geometry.normalize();
     var mesh = new THREE.Mesh(geometry, 
-        new THREE.MeshLambertMaterial({color: "rgb(250,150,150)"})
+        new THREE.MeshPhongMaterial({color: "rgb(100,100,250)"})
     );
     mesh.geometry.verticesNeedUpdate = true;
     return mesh;

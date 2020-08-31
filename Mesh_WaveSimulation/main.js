@@ -2,7 +2,7 @@
 var WIDTH = window.innerWidth;
 var HEIGHT = window.innerHeight;
 var t=0;
-var size = 50;
+var size = 10;
 
 //RENDERER
 var renderer = new THREE.WebGLRenderer({antialias:true});
@@ -25,7 +25,7 @@ var waves = [];
 
 //LIGHT
 var light = new THREE.PointLight(0xFFFFFF);
-light.position.set(0, 15, 0);
+light.position.set(0, 50, 0);
 scene.add(light);
 
 
@@ -37,9 +37,10 @@ function render() {
     renderer.render(scene, camera);
 }
 render();
-//addWave(waves, Math.floor(terrain.w * Math.random()),  Math.floor(terrain.h * Math.random()), 8, 80);
 
 
+
+addWave(waves, Math.floor(size * Math.random()),  Math.floor(size * Math.random()), 1, 80);        
 function update(){
     t+= 0.01;
     updateWaves(waves);
@@ -50,7 +51,7 @@ function update(){
     updateVertex();
     
     if (t > 5) {
-        addWave(waves, Math.floor(terrain.w * Math.random()),  Math.floor(terrain.h * Math.random()), 8, 80);
+        addWave(waves, Math.floor(size * Math.random()),  Math.floor(size * Math.random()), 1, 80);
         t = 0;
     }
     camera.rotation.x = -3.10/2;
@@ -69,9 +70,14 @@ function scale_back(){
 function updateVertex(){
     planeMesh.geometry.verticesNeedUpdate = true;
     planeMesh.geometry.facecNeedUpdate = true;
+    var tmp, value;
     for (var i=0; i<size; i++){
         for (var j=0; j<size; j++){
-            updateVertexHeight(0.2, i, j, planeMesh, size);
+            value = 0;
+            for (var w=0; w<waves.length; w++){
+                value += calcWave(waves, w, i, j, t);
+            }
+            updateVertexHeight(value/10, i, j, planeMesh, size);
         }
     }
 }
