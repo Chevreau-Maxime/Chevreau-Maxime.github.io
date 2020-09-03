@@ -4,8 +4,6 @@
 function createMesh(width){
     var tmp;
     var geometry = new THREE.Geometry();
-    geometry.verticesNeedUpdate = true;
-    geometry.colorsNeedUpdate = true;
     //vertex
     for (var i=0; i<width*width; i++){
         tmp = getXY(i, width);
@@ -14,20 +12,22 @@ function createMesh(width){
         );
     }
     //faces
-    for (var i=0; i<(width-1)*(width-1); i++){
-        tmp = getXY(i, width-1);
-        geometry.faces.push(
-            new THREE.Face3(i, i+1, i+1+width),
-            new THREE.Face3(i, i+1+width, i+width)
-        );
+    for (var i=0; i<width*width; i++){
+        tmp = getXY(i, width);
+        if ((tmp[0] < width-1) & (tmp[1] < width-1)){
+            geometry.faces.push(
+                new THREE.Face3(getIdx(tmp[0], tmp[1], width), getIdx(tmp[0]+1, tmp[1], width), getIdx(tmp[0]+1, tmp[1]+1, width)),
+                new THREE.Face3(getIdx(tmp[0], tmp[1], width), getIdx(tmp[0]+1, tmp[1]+1, width), getIdx(tmp[0], tmp[1]+1, width))
+            );
+        }
     }
     
     geometry.computeVertexNormals();
     geometry.normalize();
     var mesh = new THREE.Mesh(geometry, 
-        new THREE.MeshPhongMaterial({color: "rgb(100,100,250)"})
+        new THREE.MeshPhongMaterial( {color: 0x5555ff, side: THREE.DoubleSide} )
+        //new THREE.MeshPhongMaterial();
     );
-    mesh.geometry.verticesNeedUpdate = true;
     return mesh;
 }
 
@@ -37,11 +37,25 @@ function updateVertexHeight(value, x, y, mesh, width){
     mesh.geometry.vertices[i].y = value;
 }
 
+function callUpdate(mesh){
+    mesh.geometry.verticesNeedUpdate = true;
+    mesh.geometry.elementsNeedUpdate = true;
+    mesh.geometry.colorsNeedUpdate = true;
+    mesh.geometry.computeVertexNormals();
+}
+
 
 function getIdx(x, y, width){
     return x + (width*y);
 }
 
 function getXY(idx, width){
-    return [idx%width, Math.floor(idx/width)];
+    var x = idx;
+    while (x >= width) x -= width; 
+    return [x, Math.floor(idx/width)];
+}
+
+function randomColor(){
+    var a = Math.floor(255 * Math.random());
+    return "rgb("+a+","+a+","+a+")";
 }
