@@ -1,6 +1,6 @@
 //INIT
-var WIDTH = window.innerWidth;
-var HEIGHT = window.innerHeight;
+var WIDTH = window.innerWidth-5;
+var HEIGHT = window.innerHeight-5;
 var t=0;
 var size = 50;
 
@@ -62,8 +62,8 @@ function update(){
 
 window.onresize = scale_back;
 function scale_back(){
-    WIDTH = window.innerWidth;
-    HEIGHT = window.innerHeight;
+    WIDTH = window.innerWidth-5;
+    HEIGHT = window.innerHeight-5;
     renderer.setSize(WIDTH, HEIGHT);
     camera = new THREE.PerspectiveCamera(90, WIDTH/HEIGHT);
 }
