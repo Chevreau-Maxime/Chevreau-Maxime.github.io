@@ -6,6 +6,7 @@ var links = [["\"https://maximenodejs.herokuapp.com/\"",        "NodeJS App (Hos
              ["\"/WebProject-Trajectory(MC.SS)/trajweb.html\"", "Projet Web Peip2"],
              ["\"/Pathfinder/Pathfinder.html\"",                "Gridless Pathfinder"],
              ["\"WaveSimulation/index.html\""  ,                "WebGL Wave Simulation"],
+             ["\"Mesh_WaveSimulation/index.html\""  ,           "WebGL Wave Simulation (single mesh)"],
              ["\"/WebGL-Smiley/index.html\"",                   "WebGL Smiley"]
             ]
 
