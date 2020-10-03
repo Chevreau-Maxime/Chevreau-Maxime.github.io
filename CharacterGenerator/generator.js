@@ -10,8 +10,21 @@ window.onload = function () {
     //----------------------------------------------------Input
 
 
+    document.getElementById("generate").onclick = function(){
+        seed = Math.random()*9999999999;
+        clearMap();
+        generate();
+        drawAlphabet(20,20,20);
+    }
+
+    document.getElementById("text").oninput = function(){
+        clearMap();
+        drawAlphabet(20,20,20);
+        drawText(20,200,20);
+    }
 
     //--------------------------------------------------------GLOBAL VARIABLES :
+
 
     var can = document.getElementById("canvas");
     var con = can.getContext("2d");
@@ -19,43 +32,100 @@ window.onload = function () {
     var input_sharpness = document.getElementById("sharpness");
     var input_continuous = document.getElementById("continuous");
     var input_symmetry = document.getElementById("symmetry");
-    
+    var drawings;
+    var seed;
     //inter = setInterval(step, 1000/60);
 
-
     //--------------------------------------------------------INITIALIZATION :
+
 
     input_complexity.value = 0;
     input_continuous.value = 0;
     input_sharpness.value = 0;
     input_symmetry.value = 0;
+    seed = 1234512345; //10
 
-    var letters = new Array(26);
-    for (var i=0; i<26; i++){
-        letters[i] = String.fromCharCode(i + 65);
+    //-------random test :
+    var randtest = new Array(100);
+    for (var i=0; i<100; i++){
+        randtest[i] = 0;
     }
+    for (var i=0; i<10000; i++){
+        var r = getRandom();
+        randtest[Math.round(r*100)] += 1;
+    }
+    console.table(randtest);
+    
 
-    var drawings = new Array(26);
-
-
+    clearMap();
     generate();
     drawAlphabet(20,20,20);
 
     //--------------------------------------------------------GENERATION FUNCTIONS :
 
     function generate(){
+        drawings = new Array(26);
+        var comp     = 3 * 0.5;
+        var comp_var = 2 * 0.5;
+        var sharp    = 1 * 0.5;
+        var sharp_var= 1 * 0.5;
+        var cont     = 1 * 0.5;
+
+
+
         for (var i=0; i<26; i++){
             //init struct
             drawings[i] = new Array();
-            var nb = 3;
+            var nb = 1 + (comp + Math.round(getRandom()*comp_var));
+            var nextX = getRandom()
+            var nextY = getRandom();
             for (var j=0; j<nb; j++){
                 //create a stroke
                 drawings[i][j] = new Object();
-                drawings[i][j].start = [Math.random(), Math.random()];
-                drawings[i][j].end = [Math.random(), Math.random()];
-                drawings[i][j].bezier = [Math.random(), Math.random()];
+                drawings[i][j].start = [getRandom(), getRandom()];
+                drawings[i][j].end = [getRandom(), getRandom()];
+                //sharpness
+                var x = drawings[i][j].start[0] + drawings[i][j].end[0] / 2;
+                var y = drawings[i][j].start[1] + drawings[i][j].end[1] / 2;
+                drawings[i][j].bezier = [x + ((getRandom()-0.5) * sharp * (getRandom()*sharp_var)), y + ((getRandom()-0.5) * sharp* (getRandom()*sharp_var))];
+                //continuous ?
+                if (getRandom() < 0.5){
+                    nextX = drawings[i][j].end[0];
+                    nextY = drawings[i][j].end[1];
+                } else {
+                    nextX = getRandom();
+                    nextY = getRandom();
+                }
+                
             }
         }
+    }
+
+    /**uses a seed in [0, 10^10] */
+    function getRandom(){
+        var r1 = 1 + seed % 83;
+        var r2 = 1 + seed % 7;
+        var r3 = 1 + seed % 43;
+        seed = (seed * r3 / r2 * r1)%9999999999;
+        var res = ((r1+r2+r3) / (83+7+43+3)); //gaussian result
+        res = res * 10000;
+        res = res - Math.floor(res); //wow it works
+
+
+        /* Method 2 : better, still many 0s
+        res = res * 10;
+        res = 
+            (res<3)*0 + 
+            (res>7)*1 + 
+            ((res>=3)&(res<=7))*((res-3) / 4);
+        */
+
+        /* Method 1 : unbalanced, many 0s
+        res = (res<=0.25)*(0.5-res) + (res>=0.75)*(1.5-res); //fold between 0.25 and 0.75
+        res = res + (res-0.5); //spread between 0 and 1
+        */
+        //res = ((res>=0)&(res<=1))*res + (res>1); // in case of overshoot
+        return res;
     }
 
 
@@ -67,9 +137,7 @@ window.onload = function () {
             //latin : 
             var px = x + ((spacing+size)*i);
             var py = y;
-            con.fillStyle = "black";
-            con.font = size + "px Calibri";
-            con.fillText(letters[i], px, py);
+            drawLatin(i + 65, px, py, size);
 
             //generated : 
             py = y + size + spacing;
@@ -95,24 +163,36 @@ window.onload = function () {
         con.closePath();
     }
 
-    /**
-     * //SCORE
+    function drawLatin(ascii_code, x, y, size){
         con.fillStyle = "black";
-        con.font = "40px Calibri Bold";
-        con.fillText("SCORE : " + Score, can.width/2-140, 100);
-        //LIMIT
-        con.beginPath();
-        con.moveTo(0, limit*unitHeight);
-        con.lineTo(gameWidth*unitWidth, limit*unitHeight);
-        con.strokeStyle = "red";
-        con.lineWidth = 0.5;
-        con.stroke();
-        con.closePath();
-     */
+        con.font = size + "px Calibri";
+        var letter = String.fromCharCode(ascii_code);
+        con.fillText(letter, x, y + size);
+    }
 
 
+    function drawText(x, y, size){
+        var text = document.getElementById("text").value;
+        var px = x;
+        var py = y;
+        for (var i=0; i<text.length; i++){
+            if ((text.charCodeAt(i) >= 65) & (text.charCodeAt(i) <= 90)){
+                drawChar(text.charCodeAt(i) - 65, px, py, size);
+            } else if ((text.charCodeAt(i) >= 97) & (text.charCodeAt(i) <= 122)){ 
+                drawChar(text.charCodeAt(i) - 97, px, py, size);
+            } else {
+                drawLatin(text.charCodeAt(i), px, py, size)
+            }
+            px = px + size*1.5;
+            if (px > can.width-size){
+                px = x;
+                py += size*2;
+            }
+        }
+    }
 
     function clearMap(){
-        con.clearRect(0, 0, can.width, can.height);
+        con.fillStyle = "white";
+        con.fillRect(0, 0, can.width, can.height);
     }
 }
