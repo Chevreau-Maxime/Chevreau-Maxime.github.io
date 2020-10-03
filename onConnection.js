@@ -26,10 +26,6 @@ function askName(){
     }
 }
 
-
-
-
-
 function spawnInterface(){
     console.log("start spawning html");
     var container = document.getElementById("container");
@@ -42,4 +38,3 @@ function spawnInterface(){
         container.appendChild(block);
     }
 }
-
