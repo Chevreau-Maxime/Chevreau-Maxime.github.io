@@ -80,8 +80,8 @@ window.onload = function () {
         //defaults :
         var comp     = 3;
         var comp_var = 2;
-        var sharp    = 1;
-        var sharp_var= 1;
+        var sharp    = 1.3;
+        var sharp_var= 0;
         var cont     = 1;
 
         comp *= input_complexity.value;
@@ -104,11 +104,13 @@ window.onload = function () {
                 drawings[i][j].start = [getRandom(), getRandom()];
                 drawings[i][j].end = [getRandom(), getRandom()];
                 //sharpness
-                var x = drawings[i][j].start[0] + drawings[i][j].end[0] / 2;
-                var y = drawings[i][j].start[1] + drawings[i][j].end[1] / 2;
-                drawings[i][j].bezier = [x + ((getRandom()-0.5) * sharp * (getRandom()*sharp_var)), y + ((getRandom()-0.5) * sharp* (getRandom()*sharp_var))];
+                var x = (drawings[i][j].start[0] + drawings[i][j].end[0]) / 2;
+                var y = (drawings[i][j].start[1] + drawings[i][j].end[1]) / 2;
+                drawings[i][j].bezier = 
+                    [x + ((getRandom()-0.5) * sharp),   // * (getRandom()*sharp_var)), 
+                     y + ((getRandom()-0.5) * sharp)]; //* (getRandom()*sharp_var))];
                 //continuous ?
-                if (getRandom() < cont){
+                if ((j / nb) < cont){
                     nextX = drawings[i][j].end[0];
                     nextY = drawings[i][j].end[1];
                 } else {
