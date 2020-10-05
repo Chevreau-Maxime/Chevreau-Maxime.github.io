@@ -7,21 +7,7 @@ var inter;
 window.onload = function () {
 
 
-    //----------------------------------------------------Input
 
-
-    document.getElementById("generate").onclick = function(){
-        seed = Math.random()*9999999999;
-        clearMap();
-        generate();
-        drawAlphabet(20,20,20);
-    }
-
-    document.getElementById("text").oninput = function(){
-        clearMap();
-        drawAlphabet(20,20,20);
-        drawText(20,200,20);
-    }
 
     //--------------------------------------------------------GLOBAL VARIABLES :
 
@@ -33,17 +19,42 @@ window.onload = function () {
     var input_continuous = document.getElementById("continuous");
     var input_symmetry = document.getElementById("symmetry");
     var drawings;
+    var base_seed;
     var seed;
     //inter = setInterval(step, 1000/60);
 
+
+    //----------------------------------------------------Input
+
+
+    document.getElementById("generate").onclick = function(){
+        base_seed = Math.random()*9999999999;
+        generate();
+        draw_everything();
+    }
+
+    document.getElementById("text").oninput = function(){
+        draw_everything();
+    }
+    
+    input_complexity.onchange = function () {generate(); draw_everything();}
+    input_sharpness.onchange  = function () {generate(); draw_everything();} 
+    input_continuous.onchange = function () {generate(); draw_everything();}
+    input_symmetry.onchange   = function () {generate(); draw_everything();}
+
+    
+    
+    
     //--------------------------------------------------------INITIALIZATION :
 
 
-    input_complexity.value = 0;
-    input_continuous.value = 0;
-    input_sharpness.value = 0;
-    input_symmetry.value = 0;
-    seed = 1234512345; //10
+
+    input_complexity.value = 0.5;
+    input_continuous.value = 0.5;
+    input_sharpness.value = 0.5;
+    input_symmetry.value = 0.5;
+    base_seed = 1234512345
+    seed = base_seed; //10
 
     //-------random test :
     var randtest = new Array(100);
@@ -57,19 +68,27 @@ window.onload = function () {
     console.table(randtest);
     
 
-    clearMap();
     generate();
-    drawAlphabet(20,20,20);
+    scale_back();
+    draw_everything();
 
     //--------------------------------------------------------GENERATION FUNCTIONS :
 
     function generate(){
+        seed = base_seed;
         drawings = new Array(26);
-        var comp     = 3 * 0.5;
-        var comp_var = 2 * 0.5;
-        var sharp    = 1 * 0.5;
-        var sharp_var= 1 * 0.5;
-        var cont     = 1 * 0.5;
+        //defaults :
+        var comp     = 3;
+        var comp_var = 2;
+        var sharp    = 1;
+        var sharp_var= 1;
+        var cont     = 1;
+
+        comp *= input_complexity.value;
+        //comp_var for later
+        sharp *= input_sharpness.value;
+        //sharp_var
+        cont *= input_continuous.value;
 
 
 
@@ -89,7 +108,7 @@ window.onload = function () {
                 var y = drawings[i][j].start[1] + drawings[i][j].end[1] / 2;
                 drawings[i][j].bezier = [x + ((getRandom()-0.5) * sharp * (getRandom()*sharp_var)), y + ((getRandom()-0.5) * sharp* (getRandom()*sharp_var))];
                 //continuous ?
-                if (getRandom() < 0.5){
+                if (getRandom() < cont){
                     nextX = drawings[i][j].end[0];
                     nextY = drawings[i][j].end[1];
                 } else {
@@ -108,10 +127,10 @@ window.onload = function () {
         var r3 = 1 + seed % 43;
         seed = (seed * r3 / r2 * r1)%9999999999;
         var res = ((r1+r2+r3) / (83+7+43+3)); //gaussian result
-        res = res * 10000;
-        res = res - Math.floor(res); //wow it works
+        res = res * 10000; //get digits after the 5th one
+        res = res - Math.floor(res); //wow it works, amazing !
 
-
+        
         /* Method 2 : better, still many 0s
         res = res * 10;
         res = 
@@ -130,6 +149,23 @@ window.onload = function () {
 
 
     //--------------------------------------------------------DISPLAY FUNCTIONS :
+
+    window.onresize = scale_back;
+    function scale_back(){
+        can.width = window.innerWidth - 60;
+        can.height = window.innerHeight / 2;
+        input_complexity.style.width = window.innerWidth/2;
+        input_sharpness.style.width  = window.innerWidth/2;
+        input_continuous.style.width = window.innerWidth/2;
+        input_symmetry.style.width   = window.innerWidth/2;
+        draw_everything();
+    }
+
+    function draw_everything(){
+        clearMap();
+        drawAlphabet(20,20,20);
+        drawText(20,200,20);
+    }
 
     /**Draws the alphabet at (x,y) */
     function drawAlphabet(x, y, size, spacing = 10){
