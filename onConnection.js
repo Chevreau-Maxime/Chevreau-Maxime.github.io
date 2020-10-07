@@ -1,15 +1,15 @@
 var name;
 
 var links = [
-    ["\"https://maximenodejs.herokuapp.com/\"",        "NodeJS App (Hosted on Heroku)"                    ],
-    ["\"/Tetris/TetrisV2.html\"",                      "Tetris version 2"                                 ],
-    ["\"/Fractales/Fractal.html\"",                    "Fractals"                                         ],
-    ["\"/WebProject-Trajectory(MC.SS)/trajweb.html\"", "Trajectory simulation (Peip2)"                    ],
-    ["\"/Pathfinder/Pathfinder.html\"",                "Gridless Pathfinder"                              ],
-    ["\"WaveSimulation/index.html\""  ,                "WebGL Wave Simulation"                            ],
-    ["\"Mesh_WaveSimulation/index.html\""  ,           "WebGL Wave Simulation (single mesh)"              ],
-    ["\"/WebGL-Smiley/index.html\"",                   "WebGL Smiley"                                     ],
-    ["\"/CharacterGenerator/generator.html\"",         "Procedural Alphabet Generator and text translator"]
+    ["https://maximenodejs.herokuapp.com/",       "NodeJS App (Hosted on Heroku)"                    ],
+    ["Tetris/TetrisV2.html",                      "Tetris version 2"                                 ],
+    ["Fractales/Fractal.html",                    "Fractals"                                         ],
+    ["WebProject-Trajectory(MC.SS)/trajweb.html", "Trajectory simulation (Peip2)"                    ],
+    ["Pathfinder/Pathfinder.html",                "Gridless Pathfinder"                              ],
+    ["WaveSimulation/index.html"  ,               "WebGL Wave Simulation"                            ],
+    ["Mesh_WaveSimulation/index.html"  ,          "WebGL Wave Simulation (single mesh)"              ],
+    ["WebGL-Smiley/index.html",                   "WebGL Smiley"                                     ],
+    ["/CharacterGenerator/generator.html",         "Procedural Alphabet Generator and text translator"]
 ];
 
 
