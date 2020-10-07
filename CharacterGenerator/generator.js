@@ -101,7 +101,7 @@ window.onload = function () {
             for (var j=0; j<nb; j++){
                 //create a stroke
                 drawings[i][j] = new Object();
-                drawings[i][j].start = [getRandom(), getRandom()];
+                drawings[i][j].start = [nextX, nextY];
                 drawings[i][j].end = [getRandom(), getRandom()];
                 //sharpness
                 var x = (drawings[i][j].start[0] + drawings[i][j].end[0]) / 2;
@@ -110,14 +110,8 @@ window.onload = function () {
                     [x + ((getRandom()-0.5) * sharp),   // * (getRandom()*sharp_var)), 
                      y + ((getRandom()-0.5) * sharp)]; //* (getRandom()*sharp_var))];
                 //continuous ?
-                if ((j / nb) < cont){
-                    nextX = drawings[i][j].end[0];
-                    nextY = drawings[i][j].end[1];
-                } else {
-                    nextX = getRandom();
-                    nextY = getRandom();
-                }
-                
+                nextX = drawings[i][j].end[0] + ((getRandom()-0.5) * cont);
+                nextY = drawings[i][j].end[1] + ((getRandom()-0.5) * cont);
             }
         }
     }
