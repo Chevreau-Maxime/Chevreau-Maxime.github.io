@@ -1,5 +1,3 @@
-var name;
-
 var links = [
     ["https://maximenodejs.herokuapp.com/",       "NodeJS App (Hosted on Heroku)"                    , "snap_NodeJS.jpg"],
     ["Tetris/TetrisV2.html",                      "Tetris version 2"                                 , "snap_Tetris.jpg"],
@@ -13,41 +11,9 @@ var links = [
 ];
 
 
-
-
 window.onload = function(){
-    spawnInterface();
-    //Existing user ?
-    name = localStorage.getItem("username");
-    if (name == "null"){
-        //New User :
-        name = prompt("Hello, what is your name ?");
-        //Store
-        localStorage.setItem("username", name);
-    } else {
-        //Existing User :
-        alert("Welcome back " + name + " !");
-    }
-}
+    console.log("yes");
 
-
-function spawnInterface(){
-    console.log("start spawning html");
-    //var container = document.getElementById("container");
-    //container.innerHTML = "";
-
-    /*
-    for (var i=0; i<links.length; i++){
-        var block = document.createElement("div");
-        var a = document.createElement("a");
-        var link = document.createTextNode(links[i][1]); 
-        a.appendChild(link);
-        a.title = links[i][1];
-        a.href = links[i][0];
-        block.style = "position: absolute; width: 50%; left: 10%; top:"+ i * 8 +"%;";
-        block.appendChild(a);
-        container.appendChild(block);
-    }*/
     for (var i=0; i<links.length; i++){
         //div
         var div_resp = document.createElement('div');
@@ -73,8 +39,6 @@ function spawnInterface(){
         div_gallery.appendChild(desc);
         div_resp.appendChild(div_gallery);
         document.getElementById('body').appendChild(div_resp);
-    } 
+    }   
+
 }
-
-
-
