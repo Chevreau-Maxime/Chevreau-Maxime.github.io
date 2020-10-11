@@ -10,14 +10,14 @@
     var P2 = [0,0];
 
     var Parameters = new Array(2);
-    Parameters = [-0.835, -0.2321];
 
-
+    updateParameters();
+    resizeUI();
 
 function updateParameters(){
     Parameters[0] = Number(document.getElementById("nb1").value);
     Parameters[1] = Number(document.getElementById("nb2").value);
-    document.getElementById("nbDisplay").innerHTML = Parameters[0] + " + " + Parameters[1];
+    drawJulia();
 }
 
 function mouseClick (e) {
@@ -25,6 +25,9 @@ function mouseClick (e) {
     var canvas = document.getElementById("can");
     var con = canvas.getContext("2d");
     if ((e.clientX<canvas.width)&(e.clientY<canvas.height)) {
+        if (clickState == 0){
+            clickState = 1;
+        }
         if (clickState == 1){
             P1 = [e.clientX, e.clientY];
             con.beginPath();
@@ -46,7 +49,8 @@ function mouseClick (e) {
             con.closePath();
             clickState = 0;
             updateBorders();
-            document.getElementById("text").innerHTML += "<br />"+"Now you can render it again";
+            document.getElementById("text").innerHTML += "<br />"+"Now it will render : ";
+            setTimeout(drawJulia, 100);
         }
     }
 }
@@ -116,6 +120,7 @@ function correctResolution(){
 
 
 function drawJulia(){
+    console.log("Started Julia");
     //General Var
     var canvas = document.getElementById("can");
     var con = canvas.getContext("2d");
@@ -149,12 +154,19 @@ function drawJulia(){
             }
 
             if (iterations == 0){
-                con.fillStyle = "rgb(0, 0, 150)";
+                con.fillStyle = "rgb(0, 0, 0)";
                 con.fillRect(x, y, 1, 1);
             } else {
+                /*
                 con.fillStyle = getColorSinus((iterationsMax-iterations)/iterationsMax,
-                50, 50, 50,
-                255, 225, 225);
+                    50, 50, 50,
+                    255, 225, 225);
+                */
+                con.fillStyle = getColor(
+                    ((iterationsMax-iterations)/iterationsMax),
+                    50, 40, 30,
+                    200, 200, 250
+                )
                 //con.fillStyle = getColorRainbow((iterationsMax-iterations)/iterationsMax);
                 con.fillRect(x, y, 1, 1);
             }
@@ -162,7 +174,8 @@ function drawJulia(){
         }
     }
     var timeEnd = performance.now();
-    document.getElementById("text").innerHTML = "Time taken : " + (timeEnd-timeStart) + "ms.";
+    document.getElementById("text").innerHTML = "Time taken : " + Math.round(timeEnd-timeStart) / 1000 + "s.";
+    console.log("Done.");
 }
 
 
@@ -232,4 +245,56 @@ function getColorRainbow(percent){
 
             }
         }
+    }
+
+
+    window.onresize = resizeUI;
+    function resizeUI(){
+        var sx = window.innerWidth;
+        var sy = window.innerHeight;
+        var canvas = document.getElementById("can");
+        var b_nb1 = document.getElementById("nb1");
+        var b_nb2 = document.getElementById("nb2");
+        var b_draw = document.getElementById("draw");
+        var b_rectify = document.getElementById("rectify");
+        var b_zoomin = document.getElementById("zoomin");
+        var b_zoomout = document.getElementById("zoomout");
+        var b_text = document.getElementById("text");
+        if ((sx > sy) || true){ //CASE COMPUTER
+            //Canvas
+            canvas.width  = sx * 0.8;
+            canvas.height = sy * 0.8;
+            //Buttons :
+            buttonStyle(b_draw   , sy*0.10, sx*0.85, sx*0.1, sy*0.15);
+            buttonStyle(b_rectify, sy*0.30, sx*0.85, sx*0.1, sy*0.15);
+            buttonStyle(b_zoomin , sy*0.50, sx*0.85, sx*0.1, sy*0.15);
+            buttonStyle(b_zoomout, sy*0.70, sx*0.85, sx*0.1, sy*0.15);
+            buttonStyle(b_text   , sy*0.80, sx*0.10, sx*0.6, sy*0.15);
+            buttonStyle(b_nb1    , sy*0.10, sx*0.85, sx*0.06, sy*0.10);
+            buttonStyle(b_nb2    , sy*0.10, sx*0.92, sx*0.06, sy*0.10);
+        } else { //CASE MOBILE
+            canvas.width  = sx * 0.95;
+            canvas.height = sy * 0.5;
+        }
+
+        
+
+
+        //redefine p1(x1,y1) and p2 according to that :
+        var ratio_V_H = canvas.height / canvas.width;
+        x1 = 0; x2 = 3;
+        y1 = 0; y2 = x2 / ratio_V_H;
+        x1 -= x2/2;
+        y1 -= y2/2;
+        x2 /= 2;
+        y2 /= 2;
+
+        correctResolution();
+    }
+
+    function buttonStyle(button, top, left, width, height){
+        button.style.width = width;
+        button.style.height = height;
+        button.style.top = top;
+        button.style.left = left;
     }
