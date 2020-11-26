@@ -30,6 +30,7 @@ window.onload = function () {
         if (e.keyCode == 38) Input.Up = true;
         if (e.keyCode == 39) Input.Right = true;
         if (e.keyCode == 40) Input.Down = true;
+        isMoving = true;
     }
     window.addEventListener('keydown', inputPress, false);
 
@@ -39,6 +40,7 @@ window.onload = function () {
         if (e.keyCode == 38) Input.Up = false;
         if (e.keyCode == 39) Input.Right = false;
         if (e.keyCode == 40) Input.Down = false;
+        isMoving = false;
     }
     window.addEventListener('keyup', inputUp, false);
     
@@ -49,6 +51,10 @@ window.onload = function () {
     var can = document.getElementById("canvas");
     var con = can.getContext("2d");
     var inter;
+    var isMoving = false;
+    var constants = new Object();
+    constants.sky = 0;
+    
 
     //-------------------------------------------------------- INITIALIZATION :
 
@@ -66,7 +72,6 @@ window.onload = function () {
         var wh_ratio = 2;
         var w = window.innerWidth*fill_ratio;
         var h = window.innerHeight*fill_ratio;
-        console.log(window.innerWidth + " / " + window.innerHeight);
         if (w > wh_ratio*h){
             can.height = h;
             can.width = wh_ratio*h;
@@ -77,14 +82,22 @@ window.onload = function () {
         can.style.position = "absolute";
         can.style.top = ((1-fill_ratio)/2)*window.innerHeight + "px";
         can.style.left = ((1-fill_ratio)/2)*window.innerWidth + "px";
+
+        constants.char_x = 0.2 * can.width;
+        constants.char_h = 0.2 * can.height;
+        constants.ground = 0.9 * can.height;
+        constants.speed  = 0.005* can.width;
     }
 
-    function clearMap(){
-        con.fillStyle = "black";
-        con.fillRect(0,0,can.width,can.height);
+    function move(){
+        constants.sky -= constants.speed;
+        if (Math.abs(constants.sky) > can.width) constants.sky = 0;
     }
+
+
 
     function step() {
-        clearMap();
+        display(can, con, constants);
+        if (isMoving) move();
     }
 }
