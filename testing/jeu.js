@@ -49,17 +49,16 @@ window.onload = function () {
 
     //--------------------------------------------------------GLOBAL VARIABLES :
     var can = document.getElementById("canvas");
-    var con = can.getContext("2d");
     var inter;
     var isMoving = false;
-    var constants = new Object();
-    constants.sky = 0;
-    
+
 
     //-------------------------------------------------------- INITIALIZATION :
 
     inter = setInterval(step, 1000/40);
     resetCanvas();
+    var jeu = new Jeu();
+    var jeu_display = new Jeu_Display(can);
 
     //-------------------------------------------------------- FUNCTIONS :
 
@@ -82,22 +81,13 @@ window.onload = function () {
         can.style.position = "absolute";
         can.style.top = ((1-fill_ratio)/2)*window.innerHeight + "px";
         can.style.left = ((1-fill_ratio)/2)*window.innerWidth + "px";
-
-        constants.char_x = 0.2 * can.width;
-        constants.char_h = 0.2 * can.height;
-        constants.ground = 0.9 * can.height;
-        constants.speed  = 0.005* can.width;
-    }
-
-    function move(){
-        constants.sky -= constants.speed;
-        if (Math.abs(constants.sky) > can.width) constants.sky = 0;
     }
 
 
 
     function step() {
-        display(can, con, constants);
-        if (isMoving) move();
+        jeu.update();
+        jeu.display(jeu_display);
+        if (isMoving) jeu.move();
     }
 }
