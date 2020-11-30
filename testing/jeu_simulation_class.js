@@ -12,6 +12,8 @@ class Jeu {
         this.proj       = new Array();
         this.bow        = new Array();
         this.bow[0]     = Math.floor(Math.random()*this.period);
+
+        this.mob        = new Array();
     }
 
     move(){
@@ -49,6 +51,11 @@ class Jeu {
         this.proj[index] = {x:x, y:y, dx:dx, dy:dy};
     }
 
+    add_mob(x){
+        var index = this.mob.length;
+        this.mob[index] = {x:x};
+    }
+
     display(jeu_display){
         jeu_display.clearMap(this.distance, this.ground);
         jeu_display.display_character(this.char_x, this.char_h, this.ground);
@@ -57,4 +64,3 @@ class Jeu {
         }
     }
 }
-  
