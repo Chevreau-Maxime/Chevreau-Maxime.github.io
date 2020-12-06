@@ -162,11 +162,12 @@ function drawJulia(){
                     50, 50, 50,
                     255, 225, 225);
                 */
-                con.fillStyle = getColor(
+                /*con.fillStyle = getColor(
                     ((iterationsMax-iterations)/iterationsMax),
                     50, 40, 30,
                     200, 200, 250
-                )
+                )*/
+                con.fillStyle = getColorInfinite(iterations);
                 //con.fillStyle = getColorRainbow((iterationsMax-iterations)/iterationsMax);
                 con.fillRect(x, y, 1, 1);
             }
@@ -188,6 +189,14 @@ function getColor(percent, startR, startG, startB, endR, endG, endB){
     var G = startG + (percent*(endG-startG));
     var B = startB + (percent*(endB-startB));
     var res = "rgb("+R+","+G+","+B+")";
+    return res;
+}
+
+function getColorInfinite(value){
+    var r = (value + 50)%255;
+    var g = (3*value + 150)%255;
+    var b = (5*value + 255)%255;
+    var res = "rgb("+r+","+g+","+b+")";
     return res;
 }
 
