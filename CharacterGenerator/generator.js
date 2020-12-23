@@ -28,8 +28,15 @@ window.onload = function () {
 
 
     document.getElementById("generate").onclick = function(){
-        base_seed = Math.random()*9999999999;
+        base_seed = Math.floor(Math.random()*9999999999);
+        document.getElementById("seed").value = base_seed;
         generate();
+        draw_everything();
+    }
+
+    document.getElementById("seed").onchange = function(){
+        base_seed = document.getElementById("seed").value;
+        generate()
         draw_everything();
     }
 
@@ -68,6 +75,8 @@ window.onload = function () {
     console.table(randtest);
     
 
+    base_seed = Math.floor(Math.random()*9999999999);
+    document.getElementById("seed").value = base_seed;
     generate();
     scale_back();
     draw_everything();
